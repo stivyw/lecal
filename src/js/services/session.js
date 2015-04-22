@@ -160,16 +160,13 @@ services.provider('sessionService', function () {
 					return false;
 				}
 			},
-			get: function (key, service) {
+			get: function (key) {
 				var error, value, _ref, _ref1;
-				if (!validKey(key, service)) {
-					return false;
-				}
 				try {
-					value = getStore[service = determineService(service)](key);
+					return drivers[driver]['get'](key);
 				} catch (_error) {
 					error = _error;
-					$rootScope.$emit('asStorage', {
+					$rootScope.$emit('ERROR', {
 						type: 'get-error',
 						key: key,
 						service: service,
@@ -185,9 +182,6 @@ services.provider('sessionService', function () {
 			},
 			remove: function (key, service) {
 				var error;
-				if (!validKey(key, service)) {
-					return false;
-				}
 				try {
 					return removeStore[service = determineService(service)](key);
 				} catch (_error) {
@@ -202,11 +196,10 @@ services.provider('sessionService', function () {
 				}
 			},
 			clear: function (service) {
-				var error;
+				
 				try {
 					return clearStore[service = determineService(service)]();
-				} catch (_error) {
-					error = _error;
+				} catch (error) {
 					$rootScope.$emit('asStorage', {
 					type: 'clear-error',
 					service: service,
