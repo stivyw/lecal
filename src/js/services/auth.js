@@ -1,5 +1,5 @@
 /**
- * @require ./config.js
+ * @require ./storage.js
  */
 services.service('Auth', function(){
 	return {
