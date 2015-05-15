@@ -22,7 +22,6 @@ function compileScript(file) {
 gulp.task('build', function() {
   globToVinyl('src/js/*.js', function(err, files){
     for (var file in files) {
-      //console.log(files[file].path);
       compileScript(files[file].path);
     }
   });
