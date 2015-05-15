@@ -28,7 +28,6 @@ gulp.task('build', function() {
   });
 });
 gulp.task('hello', function hello () {
-  //console.log(conf('foo'));
   console.log(conf('sass.development'));
 })
 gulp.task('default', ['hello']);
