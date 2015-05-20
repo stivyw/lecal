@@ -2,26 +2,42 @@
  * @require ./storage.js
  */
 services.provider('authService', function(){
-	this.loginPath = '/login';
-	this.logoutPath = '/logout';
+	this.loginPath = '/auth/login';
+	this.logoutPath = '/auth/logout';
 
-	this.$get = ['$http', function ($http) {
-		var loginPath = this.loginPath;
-		var logoutPath = this.logoutPath;
+	this.$get = ['$http', 'sessionService', function ($http, Session) {
+		var loginPath = this.loginPath,
+			logoutPath = this.logoutPath,
+			user;
+
+
 		return {
 			login: function(credentials){
-				console.log(credentials);
 				return $http.post(loginPath, credentials).then(function (response) {
-					console.log(response);
+					var tk = response.token;
+					if(tk){
+						Session.set('tk', tk);
+						if(response.user)
+							user = response.user;
+					}
+					
 				});
 			},
+			verify: function () {
+				// body...
+			},
 			logout: function(){
-				return 'Você saiu';
+				return $http.get(this.logoutPath).then(function () {
+					Session.remove('tk');
+				});
 			},
 //REVIEW
 			loggued: function () {
-				return !!Session.userId;
+				return !!Session.get('auth').user;
 			},
+			user: function () {
+				return user;
+			}
 			authorized: function (authorizedRoles) {
 				if (!angular.isArray(authorizedRoles)) {
 					authorizedRoles = [authorizedRoles];

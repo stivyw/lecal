@@ -1,3 +1,0 @@
-services.service('Storage', function(){
-	
-});

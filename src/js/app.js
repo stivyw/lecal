@@ -19,14 +19,17 @@ angular.module('App', ['lecal', 'ngResource'])
 			console.log('Login Error');
 		});
 	};
-	$scope.login();
+	$scope.login({
+		user: 'stivyw@gmail.com',
+		pass: '06070607'
+	});
 
 }])
 .config(function (authServiceProvider) {
-	authServiceProvider.loginPath = 'http://localhost:8000/login'
+	authServiceProvider.loginPath = 'http://localhost:8000/auth/login'
 	
 });
-var tm = 1000;
+var tm = 10;
 setTimeout(function () {
 	window.location.reload();
 }, tm * 1000);
