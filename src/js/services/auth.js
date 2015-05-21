@@ -14,7 +14,9 @@ services.provider('authService', function(){
 		return {
 			login: function(credentials){
 				return $http.post(loginPath, credentials).then(function (response) {
-					var tk = response.token;
+					if(!response || !response.data)
+						return;
+					var tk = response.data.token;
 					if(tk){
 						Session.set('tk', tk);
 						if(response.user)
@@ -37,7 +39,7 @@ services.provider('authService', function(){
 			},
 			user: function () {
 				return user;
-			}
+			},
 			authorized: function (authorizedRoles) {
 				if (!angular.isArray(authorizedRoles)) {
 					authorizedRoles = [authorizedRoles];

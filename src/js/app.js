@@ -5,10 +5,9 @@
 
 angular.module('App', ['lecal', 'ngResource'])
 
-.controller('Ctrl', ['$scope', 'authService', 'notifyService', function ($scope, Auth, Notify) {
+.controller('Ctrl', ['$scope', 'authService', function ($scope, Auth) {
 //	var model = Model('teste');
 
-	//alertService.show('É um teste para o notify');
 	$scope.login = function (credentials) {
 		Auth.login(credentials).then(function (user) {
 			//$rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
@@ -21,15 +20,43 @@ angular.module('App', ['lecal', 'ngResource'])
 	};
 	$scope.login({
 		user: 'stivyw@gmail.com',
-		pass: '06070607'
+		pass: '123456'
 	});
 
 }])
-.config(function (authServiceProvider) {
+.config(function (authServiceProvider, $httpProvider) {
 	authServiceProvider.loginPath = 'http://localhost:8000/auth/login'
-	
+	$httpProvider.interceptors.push([
+		'$injector',
+		function ($injector) {
+			console.log("interceptor");
+
+			return {
+				response: function (argument) {
+					console.log(argument);
+				},
+				responseError: function (response) {
+					console.log("ReponseError");
+					console.log(response);
+				}
+			};
+			return $injector.get('AuthInterceptor');
+		}
+	]);
+})
+.factory('AuthInterceptor', function ($rootScope, $q) {
+  return {
+    responseError: function (response) { 
+    	console.log(response);
+    }
+  };
+})
+.run(function ($rootScope) {
+	$rootScope.$on('ERROR',  function (e, next) {
+		console.log(next);
+	});
 });
-var tm = 10;
+var tm = 200;
 setTimeout(function () {
 	window.location.reload();
 }, tm * 1000);
