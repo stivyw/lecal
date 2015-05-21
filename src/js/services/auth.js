@@ -8,15 +8,20 @@ services.provider('authService', function(){
 	this.$get = ['$http', 'sessionService', function ($http, Session) {
 		var loginPath = this.loginPath,
 			logoutPath = this.logoutPath,
+			token,
 			user;
 
 
 		return {
+			getToken: function () {
+				return token;
+			},
 			login: function(credentials){
 				return $http.post(loginPath, credentials).then(function (response) {
 					if(!response || !response.data)
 						return;
 					var tk = response.data.token;
+					token = tk;
 					if(tk){
 						Session.set('tk', tk);
 						if(response.user)
