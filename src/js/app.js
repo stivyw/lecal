@@ -5,7 +5,7 @@
 
 angular.module('App', ['lecal', 'ngResource'])
 
-.controller('Ctrl', ['$scope', 'authService', function ($scope, Auth) {
+.controller('Ctrl', ['$scope', '$http', 'authService', function ($scope, $http, Auth) {
 //	var model = Model('teste');
 
 	$scope.login = function (credentials) {
@@ -17,6 +17,7 @@ angular.module('App', ['lecal', 'ngResource'])
 			//$rootScope.$broadcast(AUTH_EVENTS.loginFailed);
 			console.log('Login Error');
 		});
+		//$http.get('http://localhost:8000/api/');
 	};
 	$scope.login({
 		user: 'stivyw@gmail.com',
@@ -29,26 +30,27 @@ angular.module('App', ['lecal', 'ngResource'])
 	$httpProvider.interceptors.push([
 		'$injector',
 		function ($injector) {
-			console.log("interceptor");
-
-			return {
-				response: function (argument) {
-					console.log(argument);
-				},
-				responseError: function (response) {
-					console.log("ReponseError");
-					console.log(response);
-				}
-			};
 			return $injector.get('AuthInterceptor');
 		}
 	]);
 })
-.factory('AuthInterceptor', function ($rootScope, $q) {
+.factory('AuthInterceptor', function ($rootScope, $q, sessionService) {
+
   return {
-    responseError: function (response) { 
-    	console.log(response);
-    }
+		request: function (config) {
+			//console.log(sessionService.get('tk'));
+			console.log("Sending...");
+			console.log(config);
+			return config;
+		},
+		response: function (res) {
+			console.log(res);
+
+		},
+		responseError: function (res) {
+			document.body.innerHTML = res.data;
+			console.log(res);
+		}
   };
 })
 .run(function ($rootScope) {
